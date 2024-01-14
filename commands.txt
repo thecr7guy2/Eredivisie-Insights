@@ -1,0 +1,2 @@
+remove containers: docker rm -v -f $(docker ps -qa)
+A useful command : sudo aa-remove-unknown

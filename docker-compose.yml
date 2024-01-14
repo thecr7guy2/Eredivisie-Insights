@@ -1,0 +1,80 @@
+version: "3.9"
+
+volumes:
+    postgres_data: {}
+    minio_data: {}
+    prefect_data: {}
+
+
+services:
+  database:
+    image: postgres:15.5-alpine
+    # restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=prefect
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    profiles: ["server"]
+
+  minio:
+    image: minio/minio:latest
+    entrypoint: ["minio", "server", "--address", "0.0.0.0:9000", "--console-address", "0.0.0.0:9001", "/data"]
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - "minio_data:/data"
+    profiles: ["minio"]
+
+  server:
+    image: prefecthq/prefect:2.14.15-python3.10
+    # restart: always
+    volumes:
+      - prefect_data:/root/.prefect
+    entrypoint: ["/opt/prefect/entrypoint.sh", "prefect", "server", "start"]
+    env_file:
+      - ./docker_envs/prefect.env
+      - ./docker_envs/aws.env
+      
+    ports:
+      - 4200:4200
+    depends_on:
+      - database
+    profiles: ["server"]
+
+
+  agent:
+    image: prefecthq/prefect:2.11.5-python3.11
+    # restart: always
+    entrypoint: ["/opt/prefect/entrypoint.sh", "prefect", "agent", "start", "-q", "YOUR_WORK_QUEUE_NAME"]
+    environment:
+      - PREFECT_API_URL=http://server:4200/api
+    profiles: ["agent"]
+
+  cli:
+    image: prefecthq/prefect:2.11.5-python3.11
+    entrypoint: "bash"
+    working_dir: "/root/scripts"
+    volumes:
+      - "./scripts:/root/scripts"
+    environment:
+      - PREFECT_API_URL=http://server:4200/api
+    env_file:
+      - ./docker_envs/football-data.env
+
+    profiles: ["cli"]
+
+
+
+
+    
+    
+    
+
+
+  
+ 
