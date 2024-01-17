@@ -1,8 +1,9 @@
-# from prefect_aws import AwsCredentials
-# from prefect_aws.s3 import S3Bucket
+from prefect_aws import AwsCredentials
+from prefect_aws.s3 import S3Bucket
 import os 
 from prefect import flow, task
 import requests
+
 # from dotenv import load_dotenv
 
 
@@ -11,8 +12,6 @@ import requests
 #     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 #     )
 
-# dotenv_path = os.path.join(os.path.dirname(__file__), '../docker_envs/football-data.env')
-# load_dotenv(dotenv_path)
 
 
 @task(name="Get PL Data",log_prints=True)

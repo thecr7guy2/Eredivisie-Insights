@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 requests = "*"
+beautifulsoup4 = "*"
+pandas = "*"
+lxml = "*"
 
 [dev-packages]
 python-dotenv = "*"

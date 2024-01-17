@@ -1,2 +1,10 @@
 remove containers: docker rm -v -f $(docker ps -qa)
 A useful command : sudo aa-remove-unknown
+
+
+"Provide recommendations and insights on the most suitable types of visualizations that should be used to represent 
+key performance indicators (KPIs) for a football dashboard in the Dutch league (Eredivisie). The visualizations should effectively
+convey information related to team and player performance, including offense, defense, possession, and overall effectiveness. 
+Please explain which types of charts or graphs would be most appropriate for each KPI, considering factors like data complexity and the 
+clarity of presentation. The goal is to ensure that the dashboard presents information in an easily understandable and insightful manner."
+
