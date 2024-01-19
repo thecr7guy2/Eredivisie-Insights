@@ -4,7 +4,7 @@ Transforming Eredivisie league data into dynamic, insightful dashboards for real
 
 
 
-<img src="images/dashboard.jpg" >
+<img src="images/dashboard.png" >
 
 
 
