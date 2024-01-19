@@ -23,6 +23,7 @@ wheels/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
+docker_envs/*.env
 *.egg
 MANIFEST
 

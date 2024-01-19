@@ -138,14 +138,14 @@ def get_all_team_df():
 if __name__ == "__main__":
     players = get_all_player_df()
     json_data = players.to_json(orient='records', lines=True)
-    with open('player_data.json', 'w') as file:
+    with open('../data/raw_data/player_data.json', 'w') as file:
         file.write(json_data)
 
     teams = get_all_team_df()
     # print(players.shape)
     # print(teams.shape)
     json_data = teams.to_json(orient='records', lines=True)
-    with open('team_data.json', 'w') as file:
+    with open('../data/raw_data/team_data.json', 'w') as file:
         file.write(json_data)
 
     

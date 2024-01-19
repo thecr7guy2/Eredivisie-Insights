@@ -8,6 +8,8 @@ requests = "*"
 beautifulsoup4 = "*"
 pandas = "*"
 lxml = "*"
+boto3 = "*"
+prefect = "*"
 
 [dev-packages]
 python-dotenv = "*"

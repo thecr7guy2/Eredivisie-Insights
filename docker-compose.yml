@@ -2,33 +2,25 @@ version: "3.9"
 
 volumes:
     postgres_data: {}
-    minio_data: {}
     prefect_data: {}
+    superset_data: {}
 
 
 services:
   database:
     image: postgres:15.5-alpine
-    # restart: always
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./superset/docker-entrypoint-initdb.d/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=prefect
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     profiles: ["server"]
 
-  minio:
-    image: minio/minio:latest
-    entrypoint: ["minio", "server", "--address", "0.0.0.0:9000", "--console-address", "0.0.0.0:9001", "/data"]
-    ports:
-      - 9000:9000
-      - 9001:9001
-    volumes:
-      - "minio_data:/data"
-    profiles: ["minio"]
 
   server:
     image: prefecthq/prefect:2.14.15-python3.10
@@ -39,11 +31,10 @@ services:
     env_file:
       - ./docker_envs/prefect.env
       - ./docker_envs/aws.env
-      
-    ports:
-      - 4200:4200
     depends_on:
       - database
+    ports:
+      - 4200:4200
     profiles: ["server"]
 
 
@@ -55,24 +46,33 @@ services:
       - PREFECT_API_URL=http://server:4200/api
     profiles: ["agent"]
 
-  cli:
-    image: prefecthq/prefect:2.11.5-python3.11
-    entrypoint: "bash"
-    working_dir: "/root/scripts"
-    volumes:
-      - "./scripts:/root/scripts"
-    environment:
-      - PREFECT_API_URL=http://server:4200/api
-    env_file:
-      - ./docker_envs/football-data.env
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    profiles: ["server"]
 
-    profiles: ["cli"]
+  
+  superset:
+      build:
+        context: ./superset
+        dockerfile: Dockerfile
+      container_name: superset
+      environment:
+        - ADMIN_USERNAME=admin
+        - ADMIN_EMAIL=admin@superset.com
+        - ADMIN_PASSWORD=admin
+      env_file:
+        - ./docker_envs/aws.env
+      ports:
+        - '8088:8088'
+      volumes:
+        - superset_data:/app/superset_home
+      profiles: ["dash"]
 
-
-
-
-    
-    
     
 
 
